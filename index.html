@@ -1,0 +1,476 @@
+<!doctype html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>כספית — ניהול הלוואות לעמותה</title>
+<meta name="description" content="תוכנה שולחנית לניהול ההלוואות של עמותה. לוח סילוקין שמתאים לבנק עד האגורה, סנכרון ריבית ומדד, ודוחות לרואה חשבון.">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<meta property="og:title" content="כספית — ניהול הלוואות לעמותה">
+<meta property="og:description" content="לוח סילוקין שמתאים לבנק עד האגורה.">
+<meta property="og:image" content="img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap">
+<style>
+:root{
+  --ground:#F2F6FA; --surface:#FFFFFF; --soft:#E9F1F8; --line:#D9E4EE;
+  --ink:#14222E; --ink2:#44586B; --muted:#748999;
+  --blue:#1E7FC2; --blueDark:#135C92; --blueSoft:#E2F0FA;
+  --teal:#1B8A86; --gold:#E0A42C;
+  --deep:#0F2A42;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;direction:rtl;background:var(--ground);color:var(--ink);
+  font-family:"Heebo",-apple-system,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+h1{font-size:clamp(34px,5.4vw,56px)}
+h2{font-size:clamp(25px,3.6vw,34px)}
+h3{font-size:19px;font-weight:700}
+p{margin:0}
+a{color:var(--blueDark)}
+img{max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+section{padding-block:clamp(52px,7vw,86px)}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--blue);
+  text-transform:none;margin-bottom:10px}
+.lead{font-size:clamp(17px,2vw,20px);color:var(--ink2);max-width:62ch;margin-top:14px}
+
+/* ===== ניווט ===== */
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.88);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:14px;height:64px}
+header .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px}
+header .brand img{width:36px;height:36px}
+header nav{margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap}
+header nav a{padding:7px 12px;border-radius:8px;color:var(--ink2);text-decoration:none;
+  font-size:14.5px;font-weight:500}
+header nav a:hover{background:var(--soft);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;
+  border:0;border-radius:10px;padding:11px 20px;font-weight:700;font-size:15.5px;
+  cursor:pointer;text-decoration:none;font-family:inherit;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:var(--surface);color:var(--ink2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--soft);color:var(--ink);filter:none}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:8px}
+
+/* ===== פתיח ===== */
+.hero{background:linear-gradient(170deg,#FFFFFF 0%,var(--blueSoft) 62%,var(--ground) 100%);
+  border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center;
+  padding-block:clamp(44px,6vw,74px)}
+.hero .mark{width:84px;height:84px;margin-bottom:20px;filter:drop-shadow(0 10px 22px rgba(30,127,194,.3))}
+.hero .cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px;align-items:center}
+.osline{font-size:13px;color:var(--muted);margin-top:11px}
+.osline b{color:var(--ink2)}
+.shot{border-radius:var(--r);border:1px solid var(--line);overflow:hidden;
+  box-shadow:0 26px 60px -26px rgba(15,42,66,.42);background:#fff}
+.shot img{display:block;width:100%}
+
+/* ===== כרטיס דיוק ===== */
+.proof{background:var(--deep);color:#DCEAF5}
+.proof h2{color:#fff}
+.proof .lead{color:#9FBDD6}
+.proofgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;
+  background:#1D3F5C;border:1px solid #1D3F5C;border-radius:var(--r);overflow:hidden;margin-top:30px}
+.proofgrid div{background:#133552;padding:20px 22px}
+.proofgrid .n{font-size:31px;font-weight:800;color:#6FC3F5;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.proofgrid .k{font-size:13px;color:#9FBDD6;margin-top:5px}
+.tbl{margin-top:28px;background:#133552;border:1px solid #1D3F5C;border-radius:var(--r);overflow:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th,.tbl td{padding:11px 16px;text-align:start;border-bottom:1px solid #1D3F5C;white-space:nowrap}
+.tbl th{font-size:12px;color:#8FB2CD;font-weight:600;letter-spacing:.04em}
+.tbl td{font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .ok{color:#6FD7A8;font-weight:700}
+
+/* ===== יכולות ===== */
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:16px;margin-top:34px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;
+  box-shadow:0 1px 2px rgba(20,34,46,.04)}
+.card .ic{width:40px;height:40px;border-radius:11px;background:var(--blueSoft);color:var(--blueDark);
+  display:grid;place-items:center;font-size:19px;margin-bottom:13px}
+.card h3{margin-bottom:6px}
+.card p{font-size:14.5px;color:var(--ink2)}
+
+/* ===== מסכים ===== */
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:32px}
+.shots figure{margin:0}
+.shots figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;text-align:center}
+
+/* ===== הורדה ורישוי ===== */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.panel h3{margin-bottom:10px}
+.spec{list-style:none;padding:0;margin:14px 0 0;font-size:14.5px;color:var(--ink2)}
+.spec li{padding:7px 0;border-bottom:1px solid var(--soft);display:flex;justify-content:space-between;gap:12px}
+.spec li:last-child{border-bottom:0}
+.spec b{color:var(--ink);font-weight:600}
+.field{margin-top:14px}
+.field label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.field input{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 13px;
+  font-family:ui-monospace,Consolas,monospace;font-size:13.5px;direction:ltr;text-align:left}
+.field input:focus{border-color:var(--blue);outline:none}
+.hint{font-size:13px;color:var(--muted);margin-top:9px;line-height:1.7}
+code{font-family:ui-monospace,Consolas,monospace;background:var(--soft);padding:2px 7px;
+  border-radius:5px;font-size:13px;direction:ltr;display:inline-block}
+
+/* ===== שאלות ===== */
+.faq{margin-top:28px;display:grid;gap:10px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:0}
+details summary{cursor:pointer;padding:16px 20px;font-weight:700;font-size:16px;list-style:none;
+  display:flex;align-items:center;gap:10px}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"+";color:var(--blue);font-weight:800;font-size:19px;width:16px}
+details[open] summary::before{content:"–"}
+details .in{padding:0 20px 18px 20px;color:var(--ink2);font-size:15px;line-height:1.75}
+details[open]{box-shadow:0 1px 2px rgba(20,34,46,.05)}
+
+/* ===== תחתית ===== */
+footer{background:var(--deep);color:#9FBDD6;padding-block:44px;font-size:14.5px}
+footer .wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+footer a{color:#8FC4EA}
+footer .brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:17px}
+footer .brand img{width:32px;height:32px}
+.warnbox{background:#FFF6E8;border:1px solid #F0D9B5;color:#7A4D12;border-radius:11px;
+  padding:14px 17px;font-size:14.5px;margin-top:18px;line-height:1.7}
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;gap:30px}
+  .split{grid-template-columns:1fr}
+  header nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <span class="brand"><img src="img/logo.svg" alt=""> כספית</span>
+  <nav>
+    <a href="#what">מה היא עושה</a>
+    <a href="#proof">הדיוק</a>
+    <a href="#screens">מסכים</a>
+    <a href="#download">הורדה</a>
+    <a href="#license">רישוי</a>
+    <a href="#faq">שאלות</a>
+    <a href="#contact">צור קשר</a>
+  </nav>
+  <a class="btn sm" href="#download">הורדה</a>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <div>
+    <img class="mark" src="img/logo.svg" alt="כספית">
+    <h1>ההלוואות של העמותה,<br>מסודרות עד האגורה</h1>
+    <p class="lead">כספית מנהלת את ההלוואות שהעמותה קיבלה ואת אלה שנתנה —
+      ומחשבת לוח סילוקין שמתאים לדף של הבנק, לא בערך.</p>
+    <div class="cta">
+      <a class="btn" id="dl" href="#download">הורדה למחשב</a>
+      <a class="btn ghost" href="#proof">איך אני יודע שזה מדויק?</a>
+    </div>
+    <p class="osline" id="osline">מזהה את המחשב שלך…</p>
+  </div>
+  <div class="shot"><img src="img/screen-home.png"
+    alt="מסך הבית של כספית — שורת מצב עם ריבית הפריים, המדד ומועד ההחלטה הבאה"></div>
+</div></div>
+
+<section id="what"><div class="wrap">
+  <div class="eyebrow">מה היא עושה</div>
+  <h2>כל מה שעמותה צריכה לדעת על הכסף שנכנס ויצא</h2>
+  <p class="lead">שני צדדים נפרדים וברורים: אנשים שלקחו הלוואה בבנק והעבירו לעמותה את הכסף,
+    ואנשים שקיבלו מהעמותה. בלי מונחים, בלי בלבול.</p>
+  <div class="feat">
+    <div class="card"><div class="ic">◱</div><h3>לוח סילוקין אמיתי</h3>
+      <p>ריבית לפי ימים בפועל חלקי ימי השנה, לוח קרן נעול מההעמדה, ושינויי פריים
+        שמתעדכנים לבד. בדיוק כמו שהבנק מחשב.</p></div>
+    <div class="card"><div class="ic">↕</div><h3>ריבית ומדד מסונכרנים</h3>
+      <p>בכל פתיחה התוכנה מושכת את ריבית בנק ישראל ואת מדד המחירים.
+        מועד ההחלטה הבאה תמיד מול העיניים.</p></div>
+    <div class="card"><div class="ic">⇧</div><h3>העלאת לוח מהבנק</h3>
+      <p>גוררים את קובץ האקסל שהבנק נותן, והתוכנה מתיישרת לפיו — גם אם ההלוואה
+        כבר באמצע הדרך.</p></div>
+    <div class="card"><div class="ic">▦</div><h3>דוח לרואה החשבון</h3>
+      <p>יתרות ל-31.12, פילוח התחייבויות עד שנה ומעל שנה, והוצאות ריבית לשנת המס.
+        מוכן להגשה.</p></div>
+    <div class="card"><div class="ic">⇄</div><h3>החזרים חודשיים</h3>
+      <p>עוברים על ההחזרים של החודש, משנים חשבון או סכום לשורה בודדת,
+        ומייצאים לאקסל.</p></div>
+    <div class="card"><div class="ic">✉</div><h3>מסמכים מוכנים</h3>
+      <p>הסכם הלוואה, אישור קבלת כסף, מכתב תזכורת, אישור סילוק וריכוז יתרות —
+        כולם מתבניות שאפשר לערוך.</p></div>
+    <div class="card"><div class="ic">◉</div><h3>ריבוי עמותות</h3>
+      <p>האנשים משותפים לכל העמותות, ההלוואות נפרדות לגמרי.
+        מחליפים בתפריט למעלה.</p></div>
+    <div class="card"><div class="ic">🔒</div><h3>סיסמה והצפנה</h3>
+      <p>קובץ הנתונים מוצפן AES-256. גיבוי אוטומטי יומי, ו<b>קוד שחזור</b>
+        שמציל אותך אם הסיסמה נשכחה.</p></div>
+    <div class="card"><div class="ic">%</div><h3>פיגורים — בשאלה</h3>
+      <p>התוכנה לא מחייבת ריבית פיגורים מעצמה. היא שואלת: לחייב,
+        להעביר לקרן בלבד, או לדחות.</p></div>
+  </div>
+</div></section>
+
+<section id="proof" class="proof"><div class="wrap">
+  <div class="eyebrow" style="color:#6FC3F5">הדיוק</div>
+  <h2>אומתה מול לוח סילוקין אמיתי של בנק</h2>
+  <p class="lead">רוב מחשבוני ההלוואות מחלקים את הריבית השנתית ב-12. הבנק לא עושה את זה.
+    כספית נבנתה מול שני מסמכי בנק אמיתיים עד שכל שורה התאימה.</p>
+  <div class="proofgrid">
+    <div><div class="n">43 / 43</div><div class="k">שורות תואמות בלוח סילוקין מלא</div></div>
+    <div><div class="n">₪0.20</div><div class="k">הסטייה המרבית על פני כל הלוח</div></div>
+    <div><div class="n">56</div><div class="k">בדיקות אוטומטיות שרצות בכל שינוי</div></div>
+    <div><div class="n">0</div><div class="k">ספריות חיצוניות — אין מה שיישבר</div></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>השדה בדף הבנק</th><th>מה הבנק הציג</th><th>מה כספית חישבה</th><th>פער</th></tr></thead>
+    <tbody>
+      <tr><td>יתרת הקרן בפועל</td><td>171,629.32</td><td>171,629.27</td><td class="ok">5 אגורות</td></tr>
+      <tr><td>יתרה משוערכת</td><td>171,951.51</td><td>171,951.47</td><td class="ok">4 אגורות</td></tr>
+      <tr><td>תשלום הבא משוער</td><td>4,785.29</td><td>4,785.29</td><td class="ok">מדויק</td></tr>
+      <tr><td>ריבית שטרם חויבה</td><td>322.19</td><td>322.20</td><td class="ok">אגורה</td></tr>
+      <tr><td>תאריך הסיום</td><td>20.06.2030</td><td>20.06.2030</td><td class="ok">מדויק</td></tr>
+    </tbody></table></div>
+  <p class="hint" style="color:#8FB2CD;margin-top:18px">
+    שני הדברים שרוב המחשבונים מפספסים: הבנק מחלק את הריבית ב-<b style="color:#DCEAF5">ימי השנה בפועל</b>
+    (366 בשנה מעוברת, ותקופה שחוצה את 1 בינואר מתפצלת), והוא קובע את
+    <b style="color:#DCEAF5">לוח הקרן ביום ההעמדה</b> ולא מחשב אותו מחדש כשהפריים משתנה.
+  </p>
+</div></section>
+
+<section id="screens"><div class="wrap">
+  <div class="eyebrow">מסכים</div>
+  <h2>נראית כמו תוכנה, לא כמו גיליון</h2>
+  <div class="shots">
+    <figure><div class="shot"><img src="img/screen-home.png" alt="מסך הבית"></div>
+      <figcaption>דף הבית — שורת מצב, התראות ותשלומים צפויים</figcaption></figure>
+    <figure><div class="shot"><img src="img/screen-gate.png" alt="מסך ההפעלה"></div>
+      <figcaption>הפעלה עם מפתח מוצר</figcaption></figure>
+    <figure><div class="shot"><img src="img/screen-lock.png" alt="מסך הכניסה"></div>
+      <figcaption>כניסה בסיסמה — הנתונים מוצפנים</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="download" style="background:var(--surface);border-block:1px solid var(--line)">
+<div class="wrap">
+  <div class="eyebrow">הורדה</div>
+  <h2>מתקינים ומתחילים</h2>
+  <div class="split">
+    <div class="panel">
+      <h3>הגרסה האחרונה</h3>
+      <p class="hint" id="relinfo">בודק מה הגרסה העדכנית…</p>
+      <p style="margin-top:16px"><a class="btn" id="dlbtn" href="#">הורדת המתקין</a></p>
+      <ul class="spec">
+        <li><span>מערכת הפעלה</span><b>Windows 10 / 11</b></li>
+        <li><span>מעבד</span><b>64 סיביות</b></li>
+        <li><span>מקום בדיסק</span><b>כ-250 מ״ב</b></li>
+        <li><span>אינטרנט</span><b>לסנכרון ולרישוי בלבד</b></li>
+      </ul>
+      <p class="hint">התוכנה עובדת גם בלי אינטרנט. הוא נדרש להפעלה הראשונה,
+        לחידוש הרישיון מדי כמה שבועות, ולעדכון ריבית הפריים והמדד.</p>
+    </div>
+    <div class="panel">
+      <h3>המחשב שלך</h3>
+      <ul class="spec" id="sysinfo"><li><span>מזהה…</span><b>—</b></li></ul>
+      <div class="warnbox" id="oswarn" hidden></div>
+      <p class="hint">הזיהוי נעשה בדפדפן שלך בלבד ולא נשלח לשום מקום.
+        <b>מזהה המחשב לרישוי</b> אינו נקרא מהדפדפן — הוא מוצג בתוך התוכנה
+        במסך ההפעלה, וממנו מעתיקים אותו.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="license"><div class="wrap">
+  <div class="eyebrow">רישוי</div>
+  <h2>איך מפעילים</h2>
+  <p class="lead">כל מחשב מופעל פעם אחת עם מפתח מוצר. אחר כך התוכנה מחדשת את עצמה
+    ברקע, ואם אין אינטרנט היא ממשיכה לעבוד עד שהרישיון פג.</p>
+  <div class="split">
+    <div class="panel">
+      <h3>יש לך מפתח</h3>
+      <p class="hint">פותחים את כספית, מקלידים את המפתח במסך ההפעלה ולוחצים "הפעלה".
+        זהו — המחשב רשום.</p>
+      <p class="hint" style="margin-top:14px"><b>מחשב נוסף?</b> אותו מפתח עובד
+        על מספר המחשבים שסוכם ברישיון. מעבר לזה — צריך להסיר מחשב ישן.</p>
+    </div>
+    <div class="panel">
+      <h3>בקשת הפעלה</h3>
+      <p class="hint">אין אינטרנט במחשב? פותחים את כספית, לוחצים
+        "קובץ רישיון לא-מקוון", ומעתיקים משם את מזהה המחשב.</p>
+      <div class="field">
+        <label for="mid">מזהה המחשב (מתוך מסך ההפעלה)</label>
+        <input id="mid" placeholder="למשל 455c2da3b0a2a85726a377e98c4b1594" spellcheck="false">
+      </div>
+      <p style="margin-top:14px"><a class="btn" id="reqbtn" href="#">שליחת בקשה במייל</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section id="faq" style="background:var(--surface);border-block:1px solid var(--line)">
+<div class="wrap">
+  <div class="eyebrow">שאלות נפוצות</div>
+  <h2>מה שבדרך כלל שואלים</h2>
+  <div class="faq">
+    <details open><summary>שכחתי את הסיסמה. מה עכשיו?</summary><div class="in">
+      בהתקנה הראשונה כספית מציגה <b>קוד שחזור</b> ומציעה לשלוח אותו במייל או לשמור כ-PDF.
+      עם הקוד הזה נכנסים למסך "שכחתי את הסיסמה", והמערכת נפתחת ומבקשת לקבוע סיסמה חדשה.
+      <br><br>אם גם הקוד אבד — הנתונים מוצפנים ואי אפשר לפתוח אותם. זו המשמעות של הצפנה,
+      ולא קיימת דלת אחורית. לכן כדאי לשמור את הקוד במקום נפרד מהמחשב.
+    </div></details>
+    <details><summary>הלוח של כספית לא מתאים לדף של הבנק שלי</summary><div class="in">
+      שלושת הדברים שמכווננים: <b>מספר התשלומים</b>, <b>תאריך התשלום הראשון</b>
+      ו<b>ריבית המקור</b>. הדרך המהירה היא להעלות את קובץ הסילוקין שהבנק נותן —
+      כספית תתקן לבד את התאריך, תסמן כמה תשלומים כבר שולמו, ותכייל את ההחזר
+      עד שהיתרה תתאים.
+    </div></details>
+    <details><summary>אפשר לנהל כמה עמותות באותה תוכנה?</summary><div class="in">
+      כן. האנשים משותפים לכל העמותות — מזינים טלפון, מייל וחשבון בנק פעם אחת —
+      וההלוואות נפרדות לגמרי. מחליפים עמותה בתפריט למעלה, והדוחות מופקים פר עמותה.
+    </div></details>
+    <details><summary>מה קורה אם אין אינטרנט?</summary><div class="in">
+      התוכנה עובדת רגיל. הסנכרון מנסה ונכשל בשקט, ושורת המצב מראה מתי עודכן בפעם
+      האחרונה — התאריך לחיץ וניסיון חוזר. הרישיון ממשיך לעבוד עד שהוא פג
+      (כמה שבועות), ואפשר גם לקבל קובץ רישיון לא-מקוון שתקף לשנה.
+    </div></details>
+    <details><summary>איפה הנתונים שלי נשמרים?</summary><div class="in">
+      בקובץ מוצפן על המחשב שלך בלבד. שום נתון לא נשלח לשום שרת —
+      היחידים שהתוכנה פונה אליהם הם בנק ישראל והלמ״ס (לריבית ולמדד)
+      ושרת הרישוי (רק מזהה המחשב והמפתח). גיבוי אוטומטי נשמר כל יום,
+      30 גרסאות אחרונות.
+    </div></details>
+    <details><summary>איך מקבלים עדכונים?</summary><div class="in">
+      כספית בודקת בכל פתיחה אם יצאה גרסה חדשה, ואם כן מציגה מה השתנה
+      ומציעה להוריד. <b>הנתונים לא נמחקים בעדכון.</b>
+    </div></details>
+    <details><summary>אפשר לייצא לאקסל?</summary><div class="in">
+      כן, קובץ xlsx אמיתי עם לשונית לכל נושא: הלוואות, לוח סילוקין מלא,
+      תשלומים בפועל, אנשים, החזרים חודשיים וריביות. גם דוח שנתי לרו״ח
+      נשמר כ-PDF.
+    </div></details>
+  </div>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <div class="eyebrow">יצירת קשר</div>
+  <h2>יש שאלה? כותבים</h2>
+  <div class="split">
+    <div class="panel">
+      <h3>תמיכה ורכישה</h3>
+      <ul class="spec">
+        <li><span>דוא״ל</span><b><a href="mailto:0779219119w@gmail.com">0779219119w@gmail.com</a></b></li>
+        <li><span>טלפון</span><b><a href="tel:0548491808">054-8491808</a></b></li>
+        <li><span>זמני מענה</span><b>ימים א׳–ה׳</b></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>דיווח על תקלה</h3>
+      <p class="hint">כדי שנוכל לעזור מהר, כדאי לצרף: מה ניסית לעשות,
+        מה קרה בפועל, ואם זה קשור להלוואה מסוימת — גם את הצילום
+        של דף הבנק שלא מתאים.</p>
+      <p style="margin-top:14px"><a class="btn ghost" id="bugbtn" href="#">פתיחת מייל תקלה</a></p>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span class="brand"><img src="img/logo.svg" alt=""> כספית</span>
+  <span>ניהול הלוואות לעמותה</span>
+  <span style="margin-inline-start:auto" id="foot">גרסה —</span>
+</div></footer>
+
+<script>
+(function () {
+  var OWNER = "TZUR1221", REPO = "kaspit-site";
+  var MAIL = "0779219119w@gmail.com";
+
+  /* ----- זיהוי מערכת ההפעלה והגרסה ----- */
+  function detect() {
+    var ua = navigator.userAgent, d = { os: "לא זוהה", ver: "", bits: "", win: false };
+    var uad = navigator.userAgentData;
+    if (/Windows NT 10/.test(ua)) { d.os = "Windows"; d.ver = "10 או 11"; d.win = true; }
+    else if (/Windows NT 6\.3/.test(ua)) { d.os = "Windows"; d.ver = "8.1"; d.win = true; }
+    else if (/Windows NT 6\.1/.test(ua)) { d.os = "Windows"; d.ver = "7"; d.win = true; }
+    else if (/Windows/.test(ua)) { d.os = "Windows"; d.win = true; }
+    else if (/Mac OS X/.test(ua)) { d.os = "macOS"; var m = /Mac OS X ([0-9_]+)/.exec(ua);
+      if (m) d.ver = m[1].replace(/_/g, "."); }
+    else if (/Android/.test(ua)) { d.os = "Android"; }
+    else if (/iPhone|iPad/.test(ua)) { d.os = "iOS"; }
+    else if (/Linux/.test(ua)) { d.os = "Linux"; }
+    d.bits = /WOW64|Win64|x64|x86_64/.test(ua) ? "64 סיביות" : "32 סיביות";
+    var b = "דפדפן";
+    if (/Edg\//.test(ua)) b = "Edge"; else if (/Chrome\//.test(ua)) b = "Chrome";
+    else if (/Firefox\//.test(ua)) b = "Firefox"; else if (/Safari\//.test(ua)) b = "Safari";
+    d.browser = b;
+    d.screen = (window.screen ? screen.width + "×" + screen.height : "—");
+    d.lang = navigator.language || "—";
+    return d;
+  }
+  var d = detect();
+  var el = document.getElementById("osline");
+  if (el) el.innerHTML = d.win
+    ? "זוהה <b>" + d.os + " " + d.ver + "</b> · " + d.bits + " — הגרסה הזאת מתאימה לך."
+    : "זוהה <b>" + d.os + (d.ver ? " " + d.ver : "") + "</b> — כספית היא תוכנת Windows.";
+  var si = document.getElementById("sysinfo");
+  if (si) si.innerHTML =
+    "<li><span>מערכת הפעלה</span><b>" + d.os + (d.ver ? " " + d.ver : "") + "</b></li>" +
+    "<li><span>ארכיטקטורה</span><b>" + d.bits + "</b></li>" +
+    "<li><span>דפדפן</span><b>" + d.browser + "</b></li>" +
+    "<li><span>רזולוציה</span><b>" + d.screen + "</b></li>" +
+    "<li><span>שפת מערכת</span><b>" + d.lang + "</b></li>";
+  var ow = document.getElementById("oswarn");
+  if (ow && !d.win) { ow.hidden = false;
+    ow.innerHTML = "<b>שים לב:</b> כספית היא תוכנה ל-Windows. " +
+      "אפשר להוריד כאן ולהעביר למחשב Windows, או לפתוח את העמוד הזה משם."; }
+
+  /* ----- הגרסה האחרונה מגיטהאב ----- */
+  var rel = document.getElementById("relinfo"), dlb = document.getElementById("dlbtn"),
+      foot = document.getElementById("foot");
+  fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/releases/latest")
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (j) {
+      var v = (j.tag_name || "").replace(/^v/, "");
+      var a = (j.assets || []).filter(function (x) { return /\.exe$/i.test(x.name); })[0];
+      var dt = j.published_at ? new Date(j.published_at).toLocaleDateString("he-IL") : "";
+      var size = a ? Math.round(a.size / 1048576) + " מ״ב" : "";
+      rel.innerHTML = "גרסה <b>" + v + "</b>" + (dt ? " · פורסמה " + dt : "") +
+        (size ? " · " + size : "");
+      if (a) { dlb.href = a.browser_download_url; dlb.textContent = "הורדת המתקין " + v; }
+      else { dlb.href = j.html_url; dlb.textContent = "לעמוד הגרסה"; }
+      if (foot) foot.textContent = "גרסה " + v;
+      var top = document.getElementById("dl");
+      if (top && a) top.href = a.browser_download_url;
+    })
+    .catch(function () {
+      rel.innerHTML = "טרם פורסמה גרסה להורדה. אפשר לפנות אלינו ונשלח את המתקין במייל.";
+      dlb.textContent = "בקשת המתקין במייל";
+      dlb.href = "mailto:" + MAIL + "?subject=" + encodeURIComponent("בקשת מתקין — כספית");
+    });
+
+  /* ----- בקשת הפעלה ----- */
+  function mailto(sub, body) {
+    return "mailto:" + MAIL + "?subject=" + encodeURIComponent(sub) +
+      "&body=" + encodeURIComponent(body);
+  }
+  var rq = document.getElementById("reqbtn"), mid = document.getElementById("mid");
+  function updReq() {
+    var id = (mid.value || "").trim();
+    rq.href = mailto("בקשת הפעלה — כספית",
+      ["שלום,", "", "אבקש הפעלה של כספית עבור המחשב הבא:", "",
+       "מזהה מחשב: " + (id || "(להעתיק ממסך ההפעלה בתוכנה)"),
+       "מערכת הפעלה: " + d.os + " " + d.ver + " · " + d.bits, "",
+       "שם העמותה: ", "שם איש הקשר: ", "טלפון: ", "", "תודה"].join("\n"));
+  }
+  if (rq && mid) { mid.addEventListener("input", updReq); updReq(); }
+
+  var bug = document.getElementById("bugbtn");
+  if (bug) bug.href = mailto("דיווח תקלה — כספית",
+    ["שלום,", "", "מה ניסיתי לעשות: ", "מה קרה בפועל: ", "",
+     "מערכת הפעלה: " + d.os + " " + d.ver + " · " + d.bits,
+     "דפדפן: " + d.browser, "", "תודה"].join("\n"));
+})();
+</script>
+</body>
+</html>
