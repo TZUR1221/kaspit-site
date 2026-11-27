@@ -120,6 +120,26 @@ code{font-family:ui-monospace,Consolas,monospace;background:var(--soft);padding:
   border-radius:5px;font-size:13px;direction:ltr;display:inline-block}
 
 /* ===== שאלות ===== */
+.bul{list-style:none;padding:0;margin:16px 0 0}
+.bul li{padding:11px 0 11px 0;border-bottom:1px solid var(--soft);font-size:14.5px;
+  line-height:1.8;color:var(--ink2);display:grid;grid-template-columns:22px 1fr;gap:10px}
+.bul li:last-child{border-bottom:0}
+.bul li b{color:var(--ink);font-weight:600}
+.bul .m{color:#C2543F;font-weight:700}
+.bul .v{color:#1C8C5C;font-weight:700}
+.panel.bad{border-color:#F0D2CB;background:#FFFAF9}
+.panel.good{border-color:#C9E7D8;background:#F7FDFA}
+.scene{margin-top:34px;background:var(--deep);color:#DCEAF5;border-radius:var(--r);
+  padding:clamp(24px,4vw,38px)}
+.scene h3{color:#fff;font-size:clamp(19px,2.4vw,24px);margin-bottom:10px}
+.scene p{color:#9FBDD6;font-size:15.5px;line-height:1.9;max-width:70ch}
+.scene .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:1px;background:#1D3F5C;border:1px solid #1D3F5C;border-radius:12px;
+  overflow:hidden;margin-top:24px}
+.scene .nums div{background:#133552;padding:18px 20px}
+.scene .nums .n{font-size:27px;font-weight:800;color:#6FC3F5;line-height:1.15;
+  font-variant-numeric:tabular-nums}
+.scene .nums .k{font-size:13px;color:#9FBDD6;margin-top:5px;line-height:1.6}
 .faq{margin-top:28px;display:grid;gap:10px}
 details{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:0}
 details summary{cursor:pointer;padding:16px 20px;font-weight:700;font-size:16px;list-style:none;
@@ -152,6 +172,7 @@ footer .brand img{width:32px;height:32px}
   <span class="brand"><img src="img/logo.svg" alt=""> כספית</span>
   <nav>
     <a href="#what">מה היא עושה</a>
+    <a href="#why">למה זה קריטי</a>
     <a href="#proof">הדיוק</a>
     <a href="#screens">מסכים</a>
     <a href="#download">הורדה</a>
@@ -177,6 +198,74 @@ footer .brand img{width:32px;height:32px}
   <div class="shot"><img src="img/screen-home.png"
     alt="מסך הבית של כספית — שורת מצב עם ריבית הפריים, המדד ומועד ההחלטה הבאה"></div>
 </div></div>
+
+<section id="why"><div class="wrap">
+  <div class="eyebrow">למה זה קריטי</div>
+  <h2>זה לא הכסף של העמותה. זה הכסף של אנשים שסמכו עליה</h2>
+  <p class="lead">אדם הלך לבנק, חתם על הלוואה בשמו, והעביר את הכסף לעמותה.
+    החוב רשום עליו. הבנק גובה ממנו כל חודש. העמותה התחייבה להחזיר לו בדיוק את מה
+    שהוא משלם — ואם החישוב לא מדויק, מישהו מהשניים מפסיד כסף אמיתי.</p>
+
+  <div class="scene">
+    <h3>הבעיה שלא רואים עד שמאוחר</h3>
+    <p>ההחזר לבנק <b style="color:#fff">אינו סכום קבוע</b>. ריבית הפריים משתנה, מספר הימים
+      בכל חודש שונה, ושנה מעוברת מוסיפה יום. לכן התשלום של פברואר אינו התשלום של מרץ.
+      גיליון שרושם "החזר חודשי: 4,785" נכון בחודש הראשון, וטועה בכל אחד מהבאים.
+      הטעות קטנה — כמה שקלים — אבל היא חוזרת כל חודש, לכל מלווה, לאורך שנים.</p>
+    <div class="nums">
+      <div><div class="n">40</div><div class="k">מלווים בעמותה בינונית</div></div>
+      <div><div class="n">48</div><div class="k">תשלומים להלוואה ממוצעת</div></div>
+      <div><div class="n">1,920</div><div class="k">סכומים שונים לחשב, לרשום ולשלם</div></div>
+      <div><div class="n">0</div><div class="k">מהם זהה לקודם</div></div>
+    </div>
+  </div>
+
+  <div class="split" style="margin-top:30px">
+    <div class="panel bad">
+      <h3>איך זה נראה בלי תוכנה</h3>
+      <ul class="bul">
+        <li><span class="m">✕</span><span><b>החזר שלא תואם לבנק.</b> המלווה משלם לבנק 4,803
+          ומקבל מהעמותה 4,785. ההפרש יוצא מכיסו, והוא יגלה את זה רק כשייגמר לו הסבלנות
+          לבדוק — או שלא יגלה בכלל.</span></li>
+        <li><span class="m">✕</span><span><b>"כמה אני עוד חייב לו?"</b> אין תשובה בלי לשבת
+          עם דפי בנק ומחשבון. כשמלווה מתקשר ושואל, עונים לו "נבדוק ונחזור אליך".</span></li>
+        <li><span class="m">✕</span><span><b>פירעון מוקדם הופך לוויכוח.</b> צריך יתרה
+          משוערכת ליום מסוים — קרן ועוד ריבית שנצברה מאז התשלום האחרון. בגיליון
+          אין את המספר הזה.</span></li>
+        <li><span class="m">✕</span><span><b>סוף שנה אצל רואה החשבון.</b> יתרות ל-31.12,
+          פילוח התחייבויות עד שנה ומעל שנה, והוצאות ריבית לשנת המס — משוחזרים ידנית,
+          בלחץ, מתוך תנועות בנק.</span></li>
+        <li><span class="m">✕</span><span><b>הכול תלוי באדם אחד.</b> הגיליון יושב אצל
+          המתנדב שבנה אותו. הוא עוזב — ואיתו הולך הידע מי מלווה, כמה, ועד מתי.</span></li>
+        <li><span class="m">✕</span><span><b>שכחת תשלום.</b> אין מי שיזכיר. מגלים
+          כשהמלווה מתקשר, וזה בדיוק הרגע שבו האמון נסדק.</span></li>
+      </ul>
+    </div>
+
+    <div class="panel good">
+      <h3>איך זה נראה עם כספית</h3>
+      <ul class="bul">
+        <li><span class="v">✓</span><span><b>אותו מספר כמו בדף של הבנק.</b> ריבית לפי ימים
+          בפועל, לוח קרן נעול ממועד ההעמדה, ופריים שמתעדכן לבד. אומת מול לוח בנק אמיתי —
+          43 שורות, פער מרבי של 20 אגורות.</span></li>
+        <li><span class="v">✓</span><span><b>תשובה בשתי שניות.</b> נכנסים לכרטיס המלווה
+          ורואים כמה שולם, כמה נשאר, ומה התשלום הבא.</span></li>
+        <li><span class="v">✓</span><span><b>יתרה משוערכת ליום שתבחר.</b> קרן ועוד ריבית
+          שנצברה — בדיוק הסכום לסילוק, מוכן להדפסה כאישור.</span></li>
+        <li><span class="v">✓</span><span><b>דוח שנתי מוכן.</b> יתרות ל-31.12, פילוח
+          עד שנה ומעל שנה, והוצאות ריבית — בלחיצה, לאקסל.</span></li>
+        <li><span class="v">✓</span><span><b>הידע נשאר בעמותה.</b> קובץ אחד מוצפן, מגובה
+          אוטומטית בכל פתיחה. מחליף תפקיד — מקבל סיסמה וממשיך.</span></li>
+        <li><span class="v">✓</span><span><b>המערכת מזכירה.</b> מסך הבית מציג מה לשלם
+          החודש, מי בפיגור, ומתי ההחלטה הבאה על הריבית.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="lead" style="margin-top:28px">בשורה אחת: <b>אדם שלקח הלוואה בשביל העמותה
+    לא אמור לשלם על זה מכיסו, ולא אמור לרדוף אחרי התשובות.</b> כספית דואגת
+    שהמספר יהיה נכון, שהתשלום יצא בזמן, ושלכל שאלה תהיה תשובה מיידית.</p>
+</div></section>
 
 <section id="what"><div class="wrap">
   <div class="eyebrow">מה היא עושה</div>
